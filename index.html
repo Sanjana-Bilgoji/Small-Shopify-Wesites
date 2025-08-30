@@ -1,0 +1,345 @@
+<!-- save as shopify-clone.html and open in browser -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shopify-style Store Clone</title>
+  <style>
+    :root{
+      --bg:#f7f7f8; --card:#fff; --muted:#6b7280; --accent:#111827; --primary:#0f172a;
+      --glass: rgba(255,255,255,0.6);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;background:var(--bg);color:var(--primary);-webkit-font-smoothing:antialiased}
+    .site{max-width:1200px;margin:0 auto;padding:24px}
+    /* NAV */
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0}
+    .brand{display:flex;align-items:center;gap:10px}
+    .logo{width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,#111827,#4b5563);display:flex;align-items:center;justify-content:center;color:white;font-weight:700}
+    nav{display:flex;gap:12px;align-items:center}
+    .nav-link{color:var(--muted);text-decoration:none;font-size:14px}
+    .search{padding:8px 12px;border-radius:999px;border:1px solid #e6e7eb;background:white;display:flex;align-items:center;gap:8px}
+    .cart-btn{position:relative;background:transparent;border:1px solid #e6e7eb;padding:8px 12px;border-radius:999px;cursor:pointer}
+    .cart-count{position:absolute;top:-6px;right:-6px;background:#ef4444;color:#fff;border-radius:999px;padding:2px 6px;font-size:12px}
+    /* HERO */
+    .hero{display:grid;grid-template-columns:1fr 420px;gap:24px;align-items:center;margin:24px 0}
+    .hero-card{background:var(--card);border-radius:16px;padding:28px;box-shadow:0 6px 30px rgba(2,6,23,0.06)}
+    .hero h1{margin:0;font-size:clamp(26px,4.2vw,40px)}
+    .hero p{color:var(--muted);margin-top:12px}
+    .cta{margin-top:18px;background:#111827;color:#fff;padding:12px 18px;border-radius:12px;text-decoration:none;display:inline-block}
+    .hero-visual{border-radius:16px;overflow:hidden;height:320px;background:linear-gradient(135deg,#f3f4f6,#fff);display:flex;align-items:center;justify-content:center;color:#9ca3af;font-weight:600}
+    /* PRODUCTS */
+    .section-title{display:flex;align-items:center;justify-content:space-between;margin:18px 0}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+    .card{background:var(--card);border-radius:12px;padding:12px;box-shadow:0 6px 18px rgba(2,6,23,0.04);display:flex;flex-direction:column;gap:8px}
+    .thumb{height:200px;border-radius:10px;background-size:cover;background-position:center}
+    .prod-title{font-weight:600;font-size:15px}
+    .price{color:var(--muted)}
+    .btn{padding:8px 12px;border-radius:10px;border:none;background:#111827;color:#fff;cursor:pointer}
+    /* CART DRAWER */
+    .cart-drawer{position:fixed;right:0;top:0;height:100%;width:360px;background:var(--card);box-shadow:-20px 0 60px rgba(2,6,23,0.12);transform:translateX(100%);transition:transform .28s;z-index:60;padding:20px;display:flex;flex-direction:column}
+    .cart-drawer.open{transform:translateX(0)}
+    .cart-list{flex:1;overflow:auto;margin-top:12px;display:flex;flex-direction:column;gap:12px}
+    .cart-item{display:flex;gap:12px;align-items:center}
+    .cart-item img{width:64px;height:64px;object-fit:cover;border-radius:8px}
+    .qty{display:flex;align-items:center;gap:8px}
+    .muted{color:var(--muted);font-size:13px}
+    footer{margin:40px 0;text-align:center;color:var(--muted);font-size:13px}
+    /* RESPONSIVE */
+    @media(max-width:1000px){.grid{grid-template-columns:repeat(2,1fr)}.hero{grid-template-columns:1fr}}
+    @media(max-width:600px){.grid{grid-template-columns:1fr}.hero-visual{height:220px}.site{padding:12px}}
+  </style>
+</head>
+<body>
+  <div class="site">
+    <header>
+      <div class="brand">
+        <div class="logo">S</div>
+        <div>
+          <div style="font-weight:700">Shoply</div>
+          <div style="font-size:12px;color:var(--muted)">Demo store</div>
+        </div>
+      </div>
+
+      <nav>
+        <a class="nav-link" href="#">Collections</a>
+        <a class="nav-link" href="#">Men</a>
+        <a class="nav-link" href="#">Women</a>
+        <div class="search" role="search">
+          <input id="search" placeholder="Search products..." style="border:0;outline:none;font-size:14px" />
+        </div>
+        <button class="cart-btn" id="openCartBtn" title="Open cart">Cart 🛒 <span class="cart-count" id="cartCount">0</span></button>
+      </nav>
+    </header>
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-card">
+        <h1>Timeless style, made simple.</h1>
+        <p>Quality garments designed for life. Free shipping over ₹1999. Easy returns. Loved by thousands.</p>
+        <a href="#products" class="cta">Shop bestsellers</a>
+        <div style="display:flex;gap:12px;margin-top:16px">
+          <div style="padding:12px;border-radius:10px;background:var(--glass);font-weight:600">Free shipping</div>
+          <div style="padding:12px;border-radius:10px;background:var(--glass);font-weight:600">30-day returns</div>
+        </div>
+      </div>
+      <div class="hero-visual">Hero product mockup</div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="section-title">
+      <h2 id="products">Popular products</h2>
+      <div class="muted">Showing all</div>
+    </div>
+
+    <div id="grid" class="grid"></div>
+
+    <footer>Built for learning — this is a demo clone (no real checkout). © Demo Shoply</footer>
+  </div>
+
+  <!-- CART DRAWER -->
+  <div id="cartDrawer" class="cart-drawer" aria-hidden="true">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div style="font-weight:700">Your cart</div>
+      <button id="closeCartBtn" style="background:transparent;border:none;cursor:pointer">✕</button>
+    </div>
+    <div class="cart-list" id="cartList"></div>
+    <div style="margin-top:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div class="muted">Subtotal</div>
+        <div id="subtotal" style="font-weight:700">₹0</div>
+      </div>
+      <button id="checkout" class="btn" style="width:100%">Proceed to checkout</button>
+    </div>
+  </div>
+
+  <!-- PRODUCT QUICK VIEW TEMPLATE -->
+  <template id="modalTemplate">
+    <div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);z-index:80">
+      <div style="width:min(920px,96%);background:var(--card);border-radius:12px;padding:18px;display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div id="modalImage" style="border-radius:8px;background:#f3f4f6;height:420px;background-size:cover;background-position:center"></div>
+        <div>
+          <h3 id="modalTitle"></h3>
+          <div class="muted" id="modalVendor"></div>
+          <div style="margin-top:12px" id="modalDesc"></div>
+          <div style="margin-top:12px;font-weight:700" id="modalPrice"></div>
+          <div style="margin-top:14px;display:flex;gap:8px;align-items:center">
+            <label class="muted">Qty</label>
+            <input id="modalQty" type="number" value="1" min="1" style="width:70px;padding:8px;border-radius:8px;border:1px solid #eee" />
+          </div>
+          <div style="margin-top:18px;display:flex;gap:8px">
+            <button id="modalAdd" class="btn">Add to cart</button>
+            <button id="modalClose" class="btn" style="background:#efefef;color:#111;border:none">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    /* -----------------------------
+       Sample product data (mock)
+       ----------------------------- */
+    const PRODUCTS = [
+      { id: 'p1', title: 'Classic Tee', vendor: 'Shoply', price: 799, img: 'https://picsum.photos/id/1025/600/600' },
+      { id: 'p2', title: 'Everyday Hoodie', vendor: 'Shoply', price: 1999, img: 'https://picsum.photos/id/1011/600/600' },
+      { id: 'p3', title: 'Slim Jeans', vendor: 'Shoply', price: 2499, img: 'https://picsum.photos/id/1005/600/600' },
+      { id: 'p4', title: 'Leather Belt', vendor: 'Shoply', price: 499, img: 'https://picsum.photos/id/1020/600/600' },
+      { id: 'p5', title: 'Sneaker Low', vendor: 'Shoply', price: 3499, img: 'https://picsum.photos/id/1018/600/600' },
+      { id: 'p6', title: 'Cap', vendor: 'Shoply', price: 299, img: 'https://picsum.photos/id/1012/600/600' },
+      { id: 'p7', title: 'Sunglasses', vendor: 'Shoply', price: 899, img: 'https://picsum.photos/id/1010/600/600' },
+      { id: 'p8', title: 'Backpack', vendor: 'Shoply', price: 2599, img: 'https://picsum.photos/id/1021/600/600' }
+    ];
+
+    /* -----------------------------
+       Simple cart (localStorage)
+       ----------------------------- */
+    const CART_KEY = 'shoply_demo_cart_v1';
+    function loadCart(){ try{ return JSON.parse(localStorage.getItem(CART_KEY) || '[]') }catch(e){return []} }
+    function saveCart(cart){ localStorage.setItem(CART_KEY, JSON.stringify(cart)) }
+    function formatPrice(v){ return '₹' + v.toFixed(0) }
+
+    /* -----------------------------
+       Render product grid
+       ----------------------------- */
+    const grid = document.getElementById('grid');
+    function renderProducts(list){
+      grid.innerHTML = '';
+      list.forEach(p=>{
+        const div = document.createElement('div'); div.className='card';
+        div.innerHTML = `
+          <div class="thumb" style="background-image:url('${p.img}')"></div>
+          <div class="prod-title">${p.title}</div>
+          <div class="muted">${p.vendor}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="price">${formatPrice(p.price)}</div>
+            <div style="display:flex;gap:8px">
+              <button class="btn" data-add="${p.id}">Add</button>
+              <button style="padding:8px;border-radius:8px;border:1px solid #e6e7eb;background:white" data-view="${p.id}">View</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(div);
+      })
+    }
+    renderProducts(PRODUCTS);
+
+    /* -----------------------------
+       PRODUCT QUICK VIEW (modal)
+       ----------------------------- */
+    function openModal(product){
+      const tpl = document.getElementById('modalTemplate');
+      const node = tpl.content.cloneNode(true);
+      const overlay = node.querySelector('div');
+      document.body.appendChild(overlay);
+
+      const img = overlay.querySelector('#modalImage');
+      const title = overlay.querySelector('#modalTitle');
+      const vendor = overlay.querySelector('#modalVendor');
+      const desc = overlay.querySelector('#modalDesc');
+      const price = overlay.querySelector('#modalPrice');
+      const qty = overlay.querySelector('#modalQty');
+      const btn = overlay.querySelector('#modalAdd');
+      const close = overlay.querySelector('#modalClose');
+
+      img.style.backgroundImage = `url('${product.img}')`;
+      title.textContent = product.title;
+      vendor.textContent = product.vendor;
+      desc.innerHTML = `<p class="muted">A minimal, comfortable product — perfect for everyday wear.</p>`;
+      price.textContent = formatPrice(product.price);
+
+      function removeModal(){ overlay.remove(); }
+
+      close.addEventListener('click', removeModal);
+      overlay.addEventListener('click', (e)=>{ if(e.target===overlay) removeModal(); });
+      btn.addEventListener('click', ()=>{
+        addToCart(product.id, Number(qty.value || 1));
+        removeModal();
+      });
+    }
+
+    /* -----------------------------
+       CART operations + UI
+       ----------------------------- */
+    const cartDrawer = document.getElementById('cartDrawer');
+    const cartList = document.getElementById('cartList');
+    const cartCount = document.getElementById('cartCount');
+    const subtotalEl = document.getElementById('subtotal');
+
+    function openCart(){ cartDrawer.classList.add('open'); cartDrawer.setAttribute('aria-hidden','false'); renderCart(); }
+    function closeCart(){ cartDrawer.classList.remove('open'); cartDrawer.setAttribute('aria-hidden','true'); }
+
+    document.getElementById('openCartBtn').addEventListener('click', openCart);
+    document.getElementById('closeCartBtn').addEventListener('click', closeCart);
+    document.getElementById('checkout').addEventListener('click', ()=>{
+      alert('This is a demo. In a real store you would redirect to the checkout page.');
+    });
+
+    function getCartItem(productId){ const cart = loadCart(); return cart.find(i=>i.id===productId); }
+    function addToCart(productId, qty=1){
+      const cart = loadCart();
+      const existing = cart.find(i=>i.id===productId);
+      if(existing){ existing.qty += qty } else { cart.push({ id: productId, qty }) }
+      saveCart(cart);
+      renderCart();
+      flashCartCount();
+    }
+    function updateQty(productId, qty){
+      let cart = loadCart();
+      cart = cart.map(i=> i.id===productId ? {...i, qty: Math.max(1, qty)} : i).filter(i=>i.qty>0);
+      saveCart(cart);
+      renderCart();
+    }
+    function removeItem(productId){
+      let cart = loadCart();
+      cart = cart.filter(i=>i.id!==productId);
+      saveCart(cart);
+      renderCart();
+    }
+    function clearCart(){ localStorage.removeItem(CART_KEY); renderCart(); }
+
+    function renderCart(){
+      const cart = loadCart();
+      cartList.innerHTML = '';
+      if(cart.length===0){
+        cartList.innerHTML = '<div class="muted">Your cart is empty</div>';
+      } else {
+        cart.forEach(ci=>{
+          const product = PRODUCTS.find(p=>p.id===ci.id);
+          const el = document.createElement('div'); el.className='cart-item';
+          el.innerHTML = `
+            <img src="${product.img}" alt="${product.title}">
+            <div style="flex:1">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div style="font-weight:600">${product.title}</div>
+                <div style="font-weight:700">${formatPrice(product.price * ci.qty)}</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+                <div class="qty">
+                  <button style="padding:6px;border-radius:6px;border:1px solid #eee;background:white" data-decr="${ci.id}">-</button>
+                  <input style="width:44px;text-align:center;padding:6px;border-radius:6px;border:1px solid #eee" data-qty="${ci.id}" value="${ci.qty}" />
+                  <button style="padding:6px;border-radius:6px;border:1px solid #eee;background:white" data-incr="${ci.id}">+</button>
+                </div>
+                <button style="background:transparent;border:none;color:#ef4444" data-remove="${ci.id}">Remove</button>
+              </div>
+            </div>
+          `;
+          cartList.appendChild(el);
+        });
+      }
+
+      // wire up qty buttons/inputs
+      cartList.querySelectorAll('[data-incr]').forEach(btn=>{
+        btn.addEventListener('click', ()=>{ const id=btn.getAttribute('data-incr'); const item=getCartItem(id); updateQty(id, (item?.qty || 0)+1); });
+      });
+      cartList.querySelectorAll('[data-decr]').forEach(btn=>{
+        btn.addEventListener('click', ()=>{ const id=btn.getAttribute('data-decr'); const item=getCartItem(id); updateQty(id, (item?.qty || 0)-1); });
+      });
+      cartList.querySelectorAll('[data-qty]').forEach(input=>{
+        input.addEventListener('change', ()=>{ const id=input.getAttribute('data-qty'); updateQty(id, Number(input.value) || 1) });
+      });
+      cartList.querySelectorAll('[data-remove]').forEach(btn=>{
+        btn.addEventListener('click', ()=>{ removeItem(btn.getAttribute('data-remove')) });
+      });
+
+      // totals
+      const subtotal = (loadCart().reduce((s,i)=>{ const p = PRODUCTS.find(pp=>pp.id===i.id); return s + (p.price * i.qty) }, 0 )) || 0;
+      subtotalEl.textContent = formatPrice(subtotal);
+      cartCount.textContent = loadCart().reduce((s,i)=>s+i.qty,0);
+    }
+
+    function flashCartCount(){
+      const el = document.getElementById('openCartBtn');
+      el.animate([{transform:'scale(1)'},{transform:'scale(1.06)'},{transform:'scale(1)'}],{duration:240});
+    }
+
+    // wire up grid add/view buttons (event delegation)
+    grid.addEventListener('click', (e)=>{
+      const add = e.target.closest('[data-add]');
+      const view = e.target.closest('[data-view]');
+      if(add){ addToCart(add.getAttribute('data-add'),1); return; }
+      if(view){ const p = PRODUCTS.find(pp=>pp.id===view.getAttribute('data-view')); openModal(p); return; }
+    });
+
+    // search filter
+    document.getElementById('search').addEventListener('input', (e)=>{
+      const q = e.target.value.trim().toLowerCase();
+      if(!q) renderProducts(PRODUCTS);
+      else renderProducts(PRODUCTS.filter(p=> p.title.toLowerCase().includes(q) || p.vendor.toLowerCase().includes(q)));
+    });
+
+    // initialize cart count
+    renderCart();
+
+    // keyboard shortcut: "c" opens cart
+    document.addEventListener('keydown', (e)=>{ if(e.key==='c') openCart(); });
+
+    // small UX: clicking hero CTA scrolls
+    document.querySelector('.cta').addEventListener('click', (ev)=>{
+      ev.preventDefault();
+      document.getElementById('products').scrollIntoView({behavior:'smooth'});
+    });
+  </script>
+</body>
+</html>
